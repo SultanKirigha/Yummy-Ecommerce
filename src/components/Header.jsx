@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import {app} from "../firebase.config"
-import {MdShoppingBasket} from 'react-icons/md'
+import {MdShoppingBasket, MdAdd, MdLogout} from 'react-icons/md'
 import Avatar from '../img/avatar.png'
 import { useStateValue } from '../context/StateProvider';
 import { actionType } from '../context/reducer';
@@ -18,12 +18,14 @@ const Header = () => {
     const [{user}, dispatch] = useStateValue()
 
     const login = async () => {
-        const {user : {refreshToken, providerData}} = await signInWithPopup(firebaseAuth, provider);
+        if(!user){
+            const {user : {refreshToken, providerData}} = await signInWithPopup(firebaseAuth, provider);
         dispatch({
             type : actionType.SET_USER,
             user : providerData[0],
         });
         localStorage.setItem('user', JSON.stringify(providerData[0]))
+        }
     };
   return (
     <header className='fixed z-50 w-screen p-6 px-16'>
@@ -55,6 +57,11 @@ const Header = () => {
                 alt="userprofile" 
                 onClick={login}
                  />
+                 <div className='w-40 bg-gray-50 shadow-xl rounded-lg flex flex-col absolute top-2 right-0'>
+                    <p className='px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-200 transition-all duration-100 ease-in-out text-textColor text-base'>New Item <MdAdd/></p>
+                    <p className='px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-200 transition-all duration-100 ease-in-out text-textColor text-base'>LogOut <MdLogout/></p>
+
+                 </div>
                 </div>
             </div>
 
